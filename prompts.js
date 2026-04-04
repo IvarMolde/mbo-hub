@@ -64,19 +64,19 @@ Arbeidsoppgaver, arbeidstider, en vanlig dag. ${tekstlengde(nivaa)}
 Integrer ${grammatikkfokus(nivaa)} naturlig i teksten.
 
 ## OPPGAVER TIL FAGTEKST 1 (a-e)
-${oppgavesett(nivaa, 1)}
+${oppgavesett(nivaa, 1, yrke)}
 
 ## FAGTEKST 2: Arbeidsplassen og kollegaer
 Arbeidsmiljø, kommunikasjon, HMS, samarbeid. ${tekstlengde(nivaa)}
 
 ## OPPGAVER TIL FAGTEKST 2 (a-e)
-${oppgavesett(nivaa, 2)}
+${oppgavesett(nivaa, 2, yrke)}
 
 ## FAGTEKST 3: Veien til jobb som ${yrke}
 Utdanning/kurs, egenskaper, jobbsøking, arbeidsmarked. ${tekstlengde(nivaa)}
 
 ## OPPGAVER TIL FAGTEKST 3 (a-e)
-${oppgavesett(nivaa, 3)}
+${oppgavesett(nivaa, 3, yrke)}
 
 ## 🗣 MUNTLIG ØVELSE
 Rollespill eller parmøvelse som kobler alle tre tekster. Oppgi roller, situasjon og samtalepunkter.${nivaa === 'B1' || nivaa === 'B2' ? '\nGi setningsstartere: "Jeg har alltid...", "Fordi jeg...", "Jeg tror at..."' : ''}
@@ -99,7 +99,7 @@ function grammatikkfokus(nivaa) {
   }[nivaa];
 }
 
-function oppgavesett(nivaa, sett) {
+function oppgavesett(nivaa, sett, yrke) {
   const s = {
     A1: {
       1: `a) Sant/Usant (5 påstander fra teksten)
