@@ -835,33 +835,183 @@
       pres.title = `${valgtYrke} – ${valgtNivaa}`;
       const slides = parsePPTSlides(genererPPTTekst);
 
+      // Fargeskjema
+      const C = {
+        navy: '1B4F72', navyLight: '2E86C1', sky: 'D4E6F1', skyLight: 'EBF2F8',
+        white: 'FFFFFF', dark: '1C2833', text: '2C3E50', muted: '5D6D7E',
+        accent1: 'E67E22', accent2: '27AE60', accent3: '8E44AD', accent4: '2980B9',
+        warmBg: 'FEF5E7', greenBg: 'E8F8F5', purpleBg: 'F4ECF7'
+      };
+
+      // Ikon-emojier per slide-type
+      const slideIkoner = ['🎯', '🎯', '💬', '📖', '🔧', '⏰', '🤝', '🛡️', '🚀', '💡'];
+
+      // Hjelpefunksjon for SVG-ikon som base64 PNG via canvas
+      function lagIkonSirkel(emoji, bgColor, size) {
+        const canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        // Tegn sirkel
+        ctx.beginPath();
+        ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+        ctx.fillStyle = '#' + bgColor;
+        ctx.fill();
+        // Tegn emoji
+        ctx.font = `${size * 0.5}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(emoji, size/2, size/2 + 2);
+        return canvas.toDataURL('image/png');
+      }
+
       slides.forEach((s, i) => {
         const slide = pres.addSlide();
+        const ikon = slideIkoner[i] || '📌';
+
         if (i === 0) {
-          slide.background = { color: '1B4F72' };
-          slide.addText(s.tittel, { x: 0.8, y: 1.5, w: 8.4, h: 1.5, fontSize: 36, fontFace: 'Arial', color: 'FFFFFF', bold: true });
-          slide.addText(s.innhold || `Yrkesnorsk – Nivå ${valgtNivaa}`, { x: 0.8, y: 3.2, w: 8.4, h: 0.8, fontSize: 18, fontFace: 'Arial', color: 'D4E6F1' });
-          slide.addText('Molde voksenopplæringssenter – MBO', { x: 0.8, y: 4.8, w: 8.4, h: 0.5, fontSize: 12, fontFace: 'Arial', color: 'D4E6F1' });
+          // === TITTELSLIDE – mørk med dekorative elementer ===
+          slide.background = { color: C.navy };
+
+          // Dekorativ sirkel øverst til høyre
+          slide.addShape(pres.shapes.OVAL, {
+            x: 7.5, y: -0.8, w: 3.5, h: 3.5,
+            fill: { color: C.navyLight, transparency: 70 }
+          });
+          slide.addShape(pres.shapes.OVAL, {
+            x: 8.2, y: 3.5, w: 2.5, h: 2.5,
+            fill: { color: C.accent4, transparency: 80 }
+          });
+
+          // Tynn accent-linje
+          slide.addShape(pres.shapes.RECTANGLE, {
+            x: 0.8, y: 1.2, w: 1.5, h: 0.06,
+            fill: { color: C.accent1 }
+          });
+
+          slide.addText(s.tittel, {
+            x: 0.8, y: 1.5, w: 7.5, h: 1.5,
+            fontSize: 38, fontFace: 'Calibri', color: C.white, bold: true
+          });
+          slide.addText(s.innhold || `Yrkesnorsk – Nivå ${valgtNivaa}`, {
+            x: 0.8, y: 3.2, w: 7.5, h: 0.8,
+            fontSize: 20, fontFace: 'Calibri', color: C.sky
+          });
+
+          // Bunnlinje med MBO
+          slide.addShape(pres.shapes.RECTANGLE, {
+            x: 0, y: 5.1, w: 10, h: 0.52,
+            fill: { color: C.navyLight, transparency: 60 }
+          });
+          slide.addText('Molde voksenopplæringssenter – MBO', {
+            x: 0.8, y: 5.12, w: 8.4, h: 0.48,
+            fontSize: 12, fontFace: 'Calibri', color: C.sky
+          });
+
         } else if (i === slides.length - 1) {
-          slide.background = { color: '1B4F72' };
-          slide.addText(s.tittel, { x: 0.8, y: 0.4, w: 8.4, h: 0.8, fontSize: 28, fontFace: 'Arial', color: 'FFFFFF', bold: true });
+          // === DISKUSJONSSLIDE – mørk med samtalefokus ===
+          slide.background = { color: C.navy };
+
+          // Dekorative sirkler
+          slide.addShape(pres.shapes.OVAL, {
+            x: -0.5, y: 3.5, w: 2, h: 2,
+            fill: { color: C.accent3, transparency: 75 }
+          });
+          slide.addShape(pres.shapes.OVAL, {
+            x: 8.5, y: -0.5, w: 2, h: 2,
+            fill: { color: C.accent1, transparency: 75 }
+          });
+
+          // Ikon
+          slide.addText('💬', {
+            x: 0.8, y: 0.3, w: 0.8, h: 0.8,
+            fontSize: 32, valign: 'middle'
+          });
+          slide.addText(s.tittel, {
+            x: 1.7, y: 0.3, w: 7.5, h: 0.8,
+            fontSize: 30, fontFace: 'Calibri', color: C.white, bold: true,
+            valign: 'middle'
+          });
+
+          // Accent-linje
+          slide.addShape(pres.shapes.RECTANGLE, {
+            x: 0.8, y: 1.25, w: 2, h: 0.05,
+            fill: { color: C.accent1 }
+          });
+
           const p = s.innhold.split('\n').filter(l => l.trim());
-          slide.addText(p.map(t => ({ text: t.replace(/^[-•]\s*/, ''), options: { bullet: true, breakLine: true } })),
-            { x: 0.8, y: 1.6, w: 8.4, h: 3.5, fontSize: 18, fontFace: 'Arial', color: 'FFFFFF', paraSpaceAfter: 14 });
+          slide.addText(
+            p.map(t => ({ text: '  ' + t.replace(/^[-•]\s*/, ''), options: { bullet: { code: '25CF' }, breakLine: true, color: C.white } })),
+            { x: 0.8, y: 1.6, w: 8.4, h: 3.5, fontSize: 20, fontFace: 'Calibri', paraSpaceAfter: 18 }
+          );
+
         } else {
-          slide.background = { color: 'FFFFFF' };
-          slide.addShape(pres.shapes.RECTANGLE, { x: 0, y: 0, w: 10, h: 0.07, fill: { color: '1B4F72' } });
-          slide.addText(s.tittel, { x: 0.7, y: 0.3, w: 8.6, h: 0.7, fontSize: 24, fontFace: 'Arial', color: '1B4F72', bold: true });
+          // === INNHOLDSSLIDES – hvit med fargeblokker og ikoner ===
+          slide.background = { color: C.white };
+
+          // Fargekode venstre sidebar basert på slidetype
+          const sidebarColors = [C.navy, C.accent4, C.accent2, C.accent4, C.accent1, C.navyLight, C.accent2, C.accent3, C.accent1, C.accent4];
+          const sidebarColor = sidebarColors[i] || C.navy;
+          const bgTints = [C.skyLight, C.skyLight, C.greenBg, C.skyLight, C.warmBg, C.skyLight, C.greenBg, C.purpleBg, C.warmBg, C.skyLight];
+          const bgTint = bgTints[i] || C.skyLight;
+
+          // Farget venstre kant
+          slide.addShape(pres.shapes.RECTANGLE, {
+            x: 0, y: 0, w: 0.12, h: 5.625,
+            fill: { color: sidebarColor }
+          });
+
+          // Tynn topplinje
+          slide.addShape(pres.shapes.RECTANGLE, {
+            x: 0.12, y: 0, w: 9.88, h: 0.06,
+            fill: { color: sidebarColor }
+          });
+
+          // Lys bakgrunnsboks for tittel
+          slide.addShape(pres.shapes.RECTANGLE, {
+            x: 0.12, y: 0, w: 9.88, h: 1.1,
+            fill: { color: bgTint }
+          });
+
+          // Ikon i sirkel
+          slide.addText(ikon, {
+            x: 0.5, y: 0.15, w: 0.7, h: 0.7,
+            fontSize: 26, valign: 'middle', align: 'center'
+          });
+
+          // Tittel
+          slide.addText(s.tittel, {
+            x: 1.3, y: 0.15, w: 8, h: 0.7,
+            fontSize: 24, fontFace: 'Calibri', color: C.dark, bold: true,
+            valign: 'middle'
+          });
+
+          // Innhold
           const p = s.innhold.split('\n').filter(l => l.trim());
           if (p.length > 1) {
-            slide.addText(p.map(t => ({ text: t.replace(/^[-•]\s*/, ''), options: { bullet: true, breakLine: true } })),
-              { x: 0.7, y: 1.2, w: 8.6, h: 3.8, fontSize: 16, fontFace: 'Arial', color: '333333', paraSpaceAfter: 10 });
+            slide.addText(
+              p.map(t => ({
+                text: '  ' + t.replace(/^[-•]\s*/, ''),
+                options: { bullet: { code: '25CF' }, breakLine: true, color: C.text }
+              })),
+              { x: 0.7, y: 1.3, w: 8.6, h: 3.8, fontSize: 17, fontFace: 'Calibri', paraSpaceAfter: 12 }
+            );
           } else {
-            slide.addText(s.innhold, { x: 0.7, y: 1.2, w: 8.6, h: 3.8, fontSize: 16, fontFace: 'Arial', color: '333333' });
+            slide.addText(s.innhold, {
+              x: 0.7, y: 1.3, w: 8.6, h: 3.8,
+              fontSize: 17, fontFace: 'Calibri', color: C.text, lineSpacingMultiple: 1.3
+            });
           }
+
+          // Slide-nummer nederst til høyre
+          slide.addText(`${i + 1} / ${slides.length}`, {
+            x: 8.5, y: 5.2, w: 1.2, h: 0.3,
+            fontSize: 10, fontFace: 'Calibri', color: C.muted, align: 'right'
+          });
         }
+
         if (s.notater) slide.addNotes(s.notater);
       });
+
       pres.writeFile({ fileName: `${valgtYrke.replace(/[\/ ]+/g, '_')}_${valgtNivaa}_presentasjon.pptx` });
     }
 
