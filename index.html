@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBO Yrkesnorsk HUB</title>
+  <style>
+    :root {
+      --primary: #1F4E79;
+      --primary-light: #E8EFF5;
+      --primary-dark: #153655;
+      --accent: #2E8B57;
+      --text: #1A1A1A;
+      --text-muted: #555555;
+      --bg: #F5F6F8;
+      --white: #FFFFFF;
+      --border: #D1D5DB;
+      --error: #C0392B;
+      --error-bg: #FDECEA;
+      --shadow: 0 1px 4px rgba(0,0,0,0.06);
+      --radius: 6px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .skip-link {
+      position: absolute; top: -40px; left: 0;
+      background: var(--primary); color: var(--white);
+      padding: 8px 16px; z-index: 100;
+    }
+    .skip-link:focus { top: 0; }
+
+    header {
+      background: var(--primary);
+      color: var(--white);
+      padding: 20px 32px;
+      text-align: center;
+    }
+    header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 2px; }
+    header p { font-size: 0.9rem; opacity: 0.85; }
+
+    main { max-width: 920px; margin: 0 auto; padding: 20px 16px 48px; }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    /* === INNLOGGING === */
+    #login-section { max-width: 380px; margin: 80px auto; text-align: center; }
+    #login-section .card { padding: 36px 28px; }
+    #login-section h2 { text-align: center; border: none; font-size: 1.2rem; }
+
+    label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 0.9rem; }
+
+    select, input[type="password"] {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: 4px;
+      font-size: 1rem; font-family: inherit;
+      background: var(--white); color: var(--text);
+    }
+    select:focus, input:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(31,78,121,0.15);
+    }
+
+    /* === NIVÅVELGER === */
+    .nivaa-gruppe { display: flex; gap: 10px; flex-wrap: wrap; }
+    .nivaa-btn {
+      padding: 10px 24px; border: 1px solid var(--border);
+      border-radius: 4px; background: var(--white);
+      color: var(--text); font-size: 0.95rem; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: all 0.15s;
+    }
+    .nivaa-btn:hover { border-color: var(--primary); }
+    .nivaa-btn:focus { outline: none; box-shadow: 0 0 0 2px rgba(31,78,121,0.2); }
+    .nivaa-btn.valgt { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+    /* === YRKESGRID === */
+    .kategori-gruppe { margin-bottom: 16px; }
+    .kategori-tittel {
+      font-size: 0.8rem; font-weight: 700; color: var(--primary);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+    }
+    .yrker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 6px;
+    }
+    .yrke-btn {
+      padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: 4px; background: var(--white);
+      color: var(--text); font-size: 0.85rem;
+      font-family: inherit; cursor: pointer; text-align: left;
+      transition: all 0.12s;
+    }
+    .yrke-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+    .yrke-btn:focus { outline: none; box-shadow: 0 0 0 2px rgba(31,78,121,0.2); }
+    .yrke-btn.valgt { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+    /* === KNAPPER === */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px; background: var(--primary); color: var(--white);
+      border: none; border-radius: 4px; font-size: 1rem;
+      font-weight: 600; font-family: inherit; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-primary:focus { outline: none; box-shadow: 0 0 0 2px rgba(31,78,121,0.3); }
+    .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; }
+
+    .btn-success {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 20px; background: var(--accent); color: var(--white);
+      border: none; border-radius: 4px; font-size: 0.95rem;
+      font-weight: 600; font-family: inherit; cursor: pointer;
+      margin-right: 10px; margin-bottom: 8px;
+    }
+    .btn-success:hover { background: #247048; }
+
+    /* === SAMMENDRAG === */
+    .valg-sammendrag {
+      background: var(--primary-light); border-radius: 4px;
+      padding: 12px 16px; margin-bottom: 16px;
+      display: flex; gap: 24px; flex-wrap: wrap;
+    }
+    .valg-sammendrag strong { color: var(--primary); }
+
+    /* === FREMDRIFT === */
+    .fremdrift {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 24px;
+      margin-bottom: 20px; text-align: center;
+    }
+    .progress-bar { width: 100%; height: 6px; background: #E5E7EB; border-radius: 3px; overflow: hidden; margin: 12px 0 6px; }
+    .progress-bar-fill { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.5s; }
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2px solid rgba(31,78,121,0.2); border-top-color: var(--primary);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+      margin-right: 8px; vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* === PREVIEW === */
+    .preview-container {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 4px; padding: 24px 28px;
+      max-height: 550px; overflow-y: auto;
+      font-size: 0.9rem; line-height: 1.7;
+    }
+    .preview-container h2 { font-size: 1.05rem; color: var(--primary); margin: 18px 0 6px; border: none; padding: 0; }
+    .preview-container h3 { font-size: 0.95rem; color: var(--primary-dark); margin: 14px 0 4px; }
+
+    .feilmelding { background: var(--error-bg); border: 1px solid var(--error); border-radius: 4px; padding: 14px 18px; color: var(--error); margin-bottom: 14px; }
+
+    footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 32px; }
+
+    .skjult { display: none !important; }
+
+    @media (max-width: 640px) {
+      header { padding: 14px; }
+      header h1 { font-size: 1.25rem; }
+      main { padding: 12px 10px; }
+      .card { padding: 16px 14px; }
+      .yrker-grid { grid-template-columns: 1fr 1fr; }
+      .valg-sammendrag { flex-direction: column; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Hopp til hovedinnhold</a>
+  <header>
+    <h1>MBO Yrkesnorsk HUB</h1>
+    <p>Molde voksenopplæringssenter – Fagtekster og oppgaver for 50 yrker</p>
+  </header>
+
+  <main id="main">
+    <!-- INNLOGGING -->
+    <section id="login-section">
+      <div class="card">
+        <h2>Logg inn</h2>
+        <p style="margin-bottom:16px; color:var(--text-muted); font-size:0.9rem;">Skriv inn passordet du har fått av kursleder.</p>
+        <div style="margin-bottom:14px;">
+          <label for="passord-input">Passord</label>
+          <input type="password" id="passord-input" placeholder="Skriv passord..." autocomplete="off">
+        </div>
+        <div id="login-feil" class="feilmelding skjult"></div>
+        <button class="btn-primary" onclick="loggInn()" style="width:100%; justify-content:center;">Logg inn</button>
+      </div>
+    </section>
+
+    <!-- HOVEDAPP -->
+    <div id="app-section" class="skjult">
+      <section class="card">
+        <h2>1. Velg CEFR-nivå</h2>
+        <div class="nivaa-gruppe" role="radiogroup" aria-label="Velg CEFR-nivå">
+          <button class="nivaa-btn" onclick="velgNivaa('A1')" data-nivaa="A1">A1</button>
+          <button class="nivaa-btn" onclick="velgNivaa('A2')" data-nivaa="A2">A2</button>
+          <button class="nivaa-btn" onclick="velgNivaa('B1')" data-nivaa="B1">B1</button>
+          <button class="nivaa-btn" onclick="velgNivaa('B2')" data-nivaa="B2">B2</button>
+        </div>
+        <p id="nivaa-beskrivelse" style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;"></p>
+      </section>
+
+      <section class="card">
+        <h2>2. Velg yrke</h2>
+        <div id="yrker-container"></div>
+      </section>
+
+      <section class="card">
+        <h2>3. Generer materiell</h2>
+        <div id="valg-info" class="valg-sammendrag skjult">
+          <div><strong>Nivå:</strong> <span id="valgt-nivaa-vis"></span></div>
+          <div><strong>Yrke:</strong> <span id="valgt-yrke-vis"></span></div>
+        </div>
+        <button class="btn-primary" id="generer-btn" onclick="generer()" disabled>Generer fagtekster og oppgaver</button>
+      </section>
+
+      <section id="fremdrift-section" class="skjult">
+        <div class="fremdrift">
+          <div><span class="spinner"></span> <strong id="fremdrift-tekst">Genererer...</strong></div>
+          <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+          <p id="fremdrift-detalj" style="font-size:0.85rem; color:var(--text-muted);"></p>
+        </div>
+      </section>
+
+      <div id="feil-section" class="feilmelding skjult"></div>
+
+      <section id="resultat-section" class="skjult">
+        <div class="card">
+          <h2>Preview</h2>
+          <div class="preview-container" id="preview-innhold"></div>
+        </div>
+        <div class="card">
+          <h2>Last ned filer</h2>
+          <p style="margin-bottom:12px; color:var(--text-muted); font-size:0.9rem;">Word-filen kan redigeres. PowerPoint-filen er klar til gjennomgang med klassen.</p>
+          <button class="btn-success" onclick="lastNedWord()">Last ned Word (.docx)</button>
+          <button class="btn-success" onclick="lastNedPPT()">Last ned PowerPoint (.pptx)</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>MBO Yrkesnorsk HUB &copy; 2026 – Molde voksenopplæringssenter</footer>
+
+  <script src="yrker.js"></script>
+  <script src="prompts.js"></script>
+  <script>
+    let valgtNivaa = null;
+    let valgtYrke = null;
+    let lagretPassord = null;
+    let genererTekst = null;
+    let genererPPTTekst = null;
+
+    const NIVAA_BESKRIVELSER = {
+      'A1': 'Nybegynner – svært enkle setninger, bilder og ordbank.',
+      'A2': 'Grunnleggende – korte tekster, enkel grammatikk.',
+      'B1': 'Mellomnivå – lengre tekster, leddsetninger, skriveoppgaver.',
+      'B2': 'Øvre mellomnivå – autentiske tekster, analyse og diskusjon.'
+    };
+
+    // INNLOGGING
+    function loggInn() {
+      const p = document.getElementById('passord-input').value.trim();
+      if (!p) { visFeil('login-feil','Skriv inn passordet.'); return; }
+      lagretPassord = p;
+      document.getElementById('login-section').classList.add('skjult');
+      document.getElementById('app-section').classList.remove('skjult');
+      byggYrkeListe();
+    }
+    document.getElementById('passord-input').addEventListener('keydown', e => { if (e.key === 'Enter') loggInn(); });
+
+    function velgNivaa(n) {
+      valgtNivaa = n;
+      document.querySelectorAll('.nivaa-btn').forEach(b => b.classList.toggle('valgt', b.dataset.nivaa === n));
+      document.getElementById('nivaa-beskrivelse').textContent = NIVAA_BESKRIVELSER[n];
+      oppdaterGenererKnapp();
+    }
+
+    function byggYrkeListe() {
+      const c = document.getElementById('yrker-container');
+      c.innerHTML = '';
+      for (const [kat, yrker] of Object.entries(YRKER)) {
+        const g = document.createElement('div'); g.className = 'kategori-gruppe';
+        const t = document.createElement('div'); t.className = 'kategori-tittel'; t.textContent = kat; g.appendChild(t);
+        const grid = document.createElement('div'); grid.className = 'yrker-grid';
+        yrker.forEach(y => {
+          const b = document.createElement('button'); b.className = 'yrke-btn'; b.textContent = y;
+          b.onclick = () => velgYrke(y, b); grid.appendChild(b);
+        });
+        g.appendChild(grid); c.appendChild(g);
+      }
+    }
+
+    function velgYrke(y, btn) {
+      valgtYrke = y;
+      document.querySelectorAll('.yrke-btn').forEach(b => b.classList.remove('valgt'));
+      btn.classList.add('valgt');
+      oppdaterGenererKnapp();
+    }
+
+    function oppdaterGenererKnapp() {
+      const btn = document.getElementById('generer-btn');
+      const info = document.getElementById('valg-info');
+      if (valgtNivaa && valgtYrke) {
+        btn.disabled = false;
+        info.classList.remove('skjult');
+        document.getElementById('valgt-nivaa-vis').textContent = valgtNivaa;
+        document.getElementById('valgt-yrke-vis').textContent = valgtYrke;
+      } else { btn.disabled = true; info.classList.add('skjult'); }
+    }
+
+    // GENERER
+    async function generer() {
+      if (!valgtNivaa || !valgtYrke) return;
+      skjulElement('resultat-section'); skjulElement('feil-section');
+      visElement('fremdrift-section');
+      oppdaterFremdrift('Genererer fagtekster og oppgaver...', 15, `Lager materiell om ${valgtYrke} for ${valgtNivaa}...`);
+      document.getElementById('generer-btn').disabled = true;
+
+      try {
+        const fs = await kallAPI(SYSTEM_PROMPT, lagFagtekstPrompt(valgtYrke, valgtNivaa), 8000);
+        if (fs.feil) {
+          if (fs.feil === 'Feil passord') {
+            document.getElementById('app-section').classList.add('skjult');
+            document.getElementById('login-section').classList.remove('skjult');
+            visFeil('login-feil','Feil passord.'); skjulElement('fremdrift-section');
+            document.getElementById('generer-btn').disabled = false; return;
+          }
+          throw new Error(fs.feil);
+        }
+        genererTekst = fs.tekst;
+        oppdaterFremdrift('Genererer presentasjon...', 60, 'Fagtekster klare! Lager PowerPoint...');
+
+        const ps = await kallAPI(SYSTEM_PROMPT, lagPresentasjonPrompt(valgtYrke, valgtNivaa), 4000);
+        if (ps.feil) throw new Error(ps.feil);
+        genererPPTTekst = ps.tekst;
+        oppdaterFremdrift('Ferdig!', 100, '');
+
+        setTimeout(() => {
+          skjulElement('fremdrift-section');
+          visPreview();
+          visElement('resultat-section');
+          document.getElementById('generer-btn').disabled = false;
+        }, 400);
+      } catch (e) {
+        skjulElement('fremdrift-section');
+        document.getElementById('feil-section').textContent = 'Feil: ' + e.message;
+        visElement('feil-section');
+        document.getElementById('generer-btn').disabled = false;
+      }
+    }
+
+    async function kallAPI(system, prompt, maxTokens) {
+      const r = await fetch('/api/generer', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ passord: lagretPassord, system, prompt, maxTokens })
+      });
+      return await r.json();
+    }
+
+    // PREVIEW
+    function visPreview() {
+      const c = document.getElementById('preview-innhold');
+      let h = genererTekst
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/_{5,}/g, '<span style="display:inline-block;border-bottom:1px solid #333;min-width:200px;height:1.2em;">&nbsp;</span>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/\n{2,}/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+      c.innerHTML = '<p>' + h + '</p>';
+    }
+
+    // === WORD NEDLASTING ===
+    function lastNedWord() {
+      const filnavn = `${valgtYrke.replace(/[\/ ]+/g, '_')}_${valgtNivaa}.doc`;
+      const innhold = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 2.5cm; }
+  body { font-family: Arial, sans-serif; font-size: 11pt; color: #1A1A1A; line-height: 1.65; }
+  .topptekst { background-color: #1F4E79; color: white; padding: 10px 14px; margin-bottom: 16px; }
+  .topptekst .tema { font-size: 13pt; font-weight: bold; }
+  .topptekst .info { font-size: 9pt; margin-top: 2px; }
+  .felt { margin: 6pt 0; }
+  .felt-linje { border-bottom: 1px solid #999; display: block; height: 24pt; margin: 4pt 0; }
+  h2 { color: #1F4E79; font-size: 12pt; margin-top: 16pt; margin-bottom: 4pt; border-bottom: 1px solid #D6E4F0; padding-bottom: 3pt; }
+  h3 { color: #1F4E79; font-size: 11pt; margin-top: 10pt; margin-bottom: 3pt; }
+  table { border-collapse: collapse; width: 100%; margin: 6pt 0; }
+  td, th { border: 1px solid #D1D5DB; padding: 5px 8px; font-size: 10pt; vertical-align: top; }
+  th { background-color: #E8EFF5; font-weight: bold; color: #1F4E79; }
+  .muntlig { border-left: 3px solid #E0C36A; padding: 8px 12px; margin: 10pt 0; background: #FFFEF5; }
+  .fasit { margin-top: 20pt; padding-top: 10pt; border-top: 2px solid #1F4E79; }
+  .fasit h2 { color: #555; }
+</style></head>
+<body>
+  <div class="topptekst">
+    <div class="tema">Molde voksenopplæringssenter – MBO</div>
+    <div class="info">Tema: ${valgtYrke} &nbsp;|&nbsp; Nivå: ${valgtNivaa}</div>
+  </div>
+  <p style="font-size:10pt;">Navn: ________________________________ &nbsp;&nbsp;&nbsp; Dato: ____________</p>
+  ${formaterWordHTML(genererTekst)}
+</body></html>`;
+      lastNedFil(innhold, filnavn, 'application/msword');
+    }
+
+    function formaterWordHTML(tekst) {
+      return tekst
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/_{5,}/g, '<span class="felt-linje">&nbsp;</span>')
+        .replace(/^- (.+)$/gm, '&bull; $1<br>')
+        .replace(/^(\d+)\. (.+)$/gm, '$1. $2<br>')
+        .replace(/🗣/g, '<span style="font-size:14pt;">&#x1F5E3;</span>')
+        .replace(/\n{2,}/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+    }
+
+    // === POWERPOINT NEDLASTING (ekte .pptx via PptxGenJS CDN) ===
+    function lastNedPPT() {
+      // Last inn PptxGenJS dynamisk
+      if (typeof PptxGenJS !== 'undefined') {
+        lagPPTX();
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js';
+        script.onload = () => lagPPTX();
+        script.onerror = () => {
+          alert('Kunne ikke laste PowerPoint-biblioteket. Prøv igjen.');
+        };
+        document.head.appendChild(script);
+      }
+    }
+
+    function lagPPTX() {
+      const pres = new PptxGenJS();
+      pres.layout = 'LAYOUT_16x9';
+      pres.author = 'MBO Yrkesnorsk HUB';
+      pres.title = `${valgtYrke} – ${valgtNivaa}`;
+
+      const slides = parsePPTSlides(genererPPTTekst);
+
+      slides.forEach((s, i) => {
+        const slide = pres.addSlide();
+
+        if (i === 0) {
+          // Tittelslide
+          slide.background = { color: '1F4E79' };
+          slide.addText(s.tittel, {
+            x: 0.8, y: 1.5, w: 8.4, h: 1.5,
+            fontSize: 36, fontFace: 'Arial', color: 'FFFFFF', bold: true
+          });
+          slide.addText(s.innhold || `Yrkesnorsk – Nivå ${valgtNivaa}`, {
+            x: 0.8, y: 3.2, w: 8.4, h: 0.8,
+            fontSize: 18, fontFace: 'Arial', color: 'CADCFC'
+          });
+          slide.addText('Molde voksenopplæringssenter – MBO', {
+            x: 0.8, y: 4.8, w: 8.4, h: 0.5,
+            fontSize: 12, fontFace: 'Arial', color: 'CADCFC'
+          });
+        } else if (i === slides.length - 1) {
+          // Diskusjonsslide
+          slide.background = { color: '1F4E79' };
+          slide.addText(s.tittel, {
+            x: 0.8, y: 0.4, w: 8.4, h: 0.8,
+            fontSize: 28, fontFace: 'Arial', color: 'FFFFFF', bold: true
+          });
+          const punkter = s.innhold.split('\n').filter(l => l.trim());
+          slide.addText(
+            punkter.map(p => ({ text: p.replace(/^[-•]\s*/, ''), options: { bullet: true, breakLine: true } })),
+            { x: 0.8, y: 1.6, w: 8.4, h: 3.5, fontSize: 18, fontFace: 'Arial', color: 'FFFFFF', paraSpaceAfter: 14 }
+          );
+        } else {
+          // Innholdsslides – ren hvit bakgrunn
+          slide.background = { color: 'FFFFFF' };
+
+          // Tynn topplinje
+          slide.addShape(pres.shapes.RECTANGLE, {
+            x: 0, y: 0, w: 10, h: 0.06, fill: { color: '1F4E79' }
+          });
+
+          slide.addText(s.tittel, {
+            x: 0.7, y: 0.3, w: 8.6, h: 0.7,
+            fontSize: 24, fontFace: 'Arial', color: '1F4E79', bold: true
+          });
+
+          const punkter = s.innhold.split('\n').filter(l => l.trim());
+          if (punkter.length > 1) {
+            slide.addText(
+              punkter.map(p => ({ text: p.replace(/^[-•]\s*/, ''), options: { bullet: true, breakLine: true } })),
+              { x: 0.7, y: 1.2, w: 8.6, h: 3.8, fontSize: 16, fontFace: 'Arial', color: '333333', paraSpaceAfter: 10 }
+            );
+          } else {
+            slide.addText(s.innhold, {
+              x: 0.7, y: 1.2, w: 8.6, h: 3.8,
+              fontSize: 16, fontFace: 'Arial', color: '333333'
+            });
+          }
+        }
+
+        // Talenotater
+        if (s.notater) {
+          slide.addNotes(s.notater);
+        }
+      });
+
+      const filnavn = `${valgtYrke.replace(/[\/ ]+/g, '_')}_${valgtNivaa}_presentasjon.pptx`;
+      pres.writeFile({ fileName: filnavn });
+    }
+
+    function parsePPTSlides(tekst) {
+      const slides = [];
+      const blokker = tekst.split(/---SLIDE \d+---/i).filter(b => b.trim());
+
+      blokker.forEach(blokk => {
+        let tittel = '', innhold = '', notater = '';
+        const tittelMatch = blokk.match(/TITTEL:\s*(.+)/i);
+        const innholdMatch = blokk.match(/INNHOLD:\s*([\s\S]*?)(?=NOTATER:|$)/i);
+        const notatMatch = blokk.match(/NOTATER:\s*([\s\S]*?)$/i);
+
+        if (tittelMatch) tittel = tittelMatch[1].trim();
+        if (innholdMatch) innhold = innholdMatch[1].trim();
+        if (notatMatch) notater = notatMatch[1].trim();
+
+        if (tittel) slides.push({ tittel, innhold, notater });
+      });
+
+      // Fallback
+      if (slides.length === 0) {
+        slides.push({
+          tittel: `${valgtYrke} – ${valgtNivaa}`,
+          innhold: 'Presentasjon generert av MBO Yrkesnorsk HUB',
+          notater: ''
+        });
+      }
+      return slides;
+    }
+
+    // HJELPERE
+    function lastNedFil(innhold, filnavn, mimeType) {
+      const blob = new Blob([innhold], { type: mimeType + ';charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filnavn;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function oppdaterFremdrift(t, p, d) {
+      document.getElementById('fremdrift-tekst').textContent = t;
+      document.getElementById('progress-fill').style.width = p + '%';
+      document.getElementById('fremdrift-detalj').textContent = d || '';
+    }
+    function visElement(id) { document.getElementById(id).classList.remove('skjult'); }
+    function skjulElement(id) { document.getElementById(id).classList.add('skjult'); }
+    function visFeil(id, m) { const e = document.getElementById(id); e.textContent = m; e.classList.remove('skjult'); }
+  </script>
+</body>
+</html>
