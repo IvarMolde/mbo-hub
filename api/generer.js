@@ -1,9 +1,5 @@
 // api/generer.js
-// Vercel serverless function – bruker Google Gemini API via Vertex AI
-// API-nøkkelen ligger trygt som miljøvariabel på Vercel
-
-export default async function handler(req, res) {
-  // CORS-headers
+module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -11,14 +7,12 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ feil: "Kun POST er tillatt" });
 
-  // Sjekk passord
   const { passord, system, prompt, maxTokens } = req.body;
   const riktigPassord = process.env.APP_PASSORD || "mbo2026";
   if (passord !== riktigPassord) {
     return res.status(401).json({ feil: "Feil passord" });
   }
 
-  // Hent Google API-nøkkel
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ feil: "Google API-nøkkel ikke konfigurert på serveren" });
@@ -68,4 +62,4 @@ export default async function handler(req, res) {
     console.error("Serverfeil:", feil);
     return res.status(500).json({ feil: "Serverfeil: " + feil.message });
   }
-}
+};
