@@ -63,26 +63,38 @@ REKKEFØLGE (tekst → oppgaver → tekst → oppgaver):
 Arbeidsoppgaver, arbeidstider, en vanlig dag. ${tekstlengde(nivaa)}
 Integrer ${grammatikkfokus(nivaa)} naturlig i teksten.
 
-## OPPGAVER TIL FAGTEKST 1 (a-e)
+## OPPGAVER TIL FAGTEKST 1
+5 varierte oppgaver nummerert 1a, 1b, 1c, 1d, 1e.
 ${oppgavesett(nivaa, 1, yrke)}
 
 ## FAGTEKST 2: Arbeidsplassen og kollegaer
 Arbeidsmiljø, kommunikasjon, HMS, samarbeid. ${tekstlengde(nivaa)}
 
-## OPPGAVER TIL FAGTEKST 2 (a-e)
+## OPPGAVER TIL FAGTEKST 2
+5 varierte oppgaver nummerert 2a, 2b, 2c, 2d, 2e.
 ${oppgavesett(nivaa, 2, yrke)}
 
 ## FAGTEKST 3: Veien til jobb som ${yrke}
 Utdanning/kurs, egenskaper, jobbsøking, arbeidsmarked. ${tekstlengde(nivaa)}
 
-## OPPGAVER TIL FAGTEKST 3 (a-e)
+## OPPGAVER TIL FAGTEKST 3
+5 varierte oppgaver nummerert 3a, 3b, 3c, 3d, 3e.
 ${oppgavesett(nivaa, 3, yrke)}
 
 ## 🗣 MUNTLIG ØVELSE
 Rollespill eller parmøvelse som kobler alle tre tekster. Oppgi roller, situasjon og samtalepunkter.${nivaa === 'B1' || nivaa === 'B2' ? '\nGi setningsstartere: "Jeg har alltid...", "Fordi jeg...", "Jeg tror at..."' : ''}
 
 ## FASIT
-Fasit til alle oppgaver. Ved U i sant/usant: gi riktig svar. Ved åpne oppgaver: eksempelsvar.`;
+Fasit til alle oppgaver (1a–3e). Ved U i sant/usant: gi riktig svar. Ved åpne oppgaver: eksempelsvar.
+
+=== KRITISK FORMATERING ===
+- Nummerer ALLE oppgaver som 1a, 1b, 1c, 1d, 1e (fagtekst 1), 2a, 2b, 2c, 2d, 2e (fagtekst 2), 3a, 3b, 3c, 3d, 3e (fagtekst 3)
+- Hver oppgave (1a, 1b osv.) starter ALLTID med oppgavenummeret i fet skrift: **1a)**, **1b)** osv.
+- Gi ALLTID en kort instruksjon i kursiv etter nummeret, f.eks: **1a) Sant eller usant?** *Les setningene. Skriv S (sant) eller U (usant).*
+- Hver deloppgave (hvert punkt eleven skal svare på) starter på NY LINJE
+- Mellom hovedoppgaver (mellom 1a og 1b, mellom 1b og 1c osv.) skal det være EN tom linje
+- Skrivefelt: bruk _______________ (minst 15 understreker)
+- For setningssvar: _____________________________________________`;
 }
 
 

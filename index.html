@@ -780,14 +780,17 @@
   .topptekst { background-color: #1B4F72; color: white; padding: 12px 16px; margin-bottom: 20px; }
   .topptekst .tema { font-size: 14pt; font-weight: bold; }
   .topptekst .info { font-size: 10pt; margin-top: 4px; }
+  h2 { color: #1B4F72; font-size: 13pt; margin-top: 24pt; margin-bottom: 8pt; border-bottom: 2px solid #D4E6F1; padding-bottom: 4pt; }
+  h3 { color: #1B4F72; font-size: 11.5pt; margin-top: 16pt; margin-bottom: 4pt; }
   .felt-linje { border-bottom: 1px solid #666; display: block; height: 28pt; margin: 6pt 0; }
-  h2 { color: #1B4F72; font-size: 13pt; margin-top: 20pt; margin-bottom: 6pt; border-bottom: 1px solid #D4E6F1; padding-bottom: 4pt; }
-  h3 { color: #1B4F72; font-size: 11.5pt; margin-top: 14pt; margin-bottom: 4pt; }
   table { border-collapse: collapse; width: 100%; margin: 8pt 0; }
   td, th { border: 1px solid #CBD5E0; padding: 6px 10px; font-size: 10.5pt; vertical-align: top; }
   th { background-color: #EBF2F8; font-weight: bold; color: #1B4F72; }
-  .muntlig { border-left: 4px solid #E67E22; padding: 10px 14px; margin: 12pt 0; background: #FEF9F0; }
-  .fasit { margin-top: 24pt; padding-top: 12pt; border-top: 3px solid #1B4F72; }
+  .oppgave-nr { font-weight: bold; color: #1B4F72; font-size: 11.5pt; display: block; margin-top: 16pt; margin-bottom: 4pt; }
+  .deloppgave { display: block; margin-left: 12pt; margin-bottom: 4pt; line-height: 1.8; }
+  .muntlig { border-left: 4px solid #E67E22; padding: 10px 14px; margin: 16pt 0; background: #FEF9F0; }
+  .fasit { margin-top: 28pt; padding-top: 14pt; border-top: 3px solid #1B4F72; }
+  .ordliste-ord { font-weight: bold; color: #1B4F72; }
 </style></head>
 <body>
   <div class="topptekst">
@@ -801,18 +804,46 @@
     }
 
     function formaterWordHTML(tekst) {
-      return tekst
-        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-        .replace(/^# (.+)$/gm, '<h2>$1</h2>')
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        .replace(/_{5,}/g, '<span class="felt-linje">&nbsp;</span>')
-        .replace(/^- (.+)$/gm, '&bull; $1<br>')
-        .replace(/^(\d+)\. (.+)$/gm, '$1. $2<br>')
-        .replace(/🗣/g, '<span style="font-size:14pt;">&#x1F5E3;</span>')
-        .replace(/\n{2,}/g, '<br><br>')
-        .replace(/\n/g, '<br>');
+      let html = tekst;
+
+      // Overskrifter
+      html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+      html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+      html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+
+      // Fet og kursiv
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+      // Skrivefelt
+      html = html.replace(/_{5,}/g, '<span class="felt-linje">&nbsp;</span>');
+
+      // Oppgavenumre (1a, 1b, 2a, 2b osv.) — gjør dem til tydelige blokker med avstand
+      html = html.replace(/^(<strong>)?(\d+[a-e]\))(<\/strong>)?(.*)$/gm, function(match, b1, num, b2, rest) {
+        // Sjekk om det er en "a)" oppgave (ny hovedoppgave-start)
+        const isFirst = num.endsWith('a)');
+        const topMargin = isFirst ? '20pt' : '14pt';
+        return `<div style="margin-top:${topMargin}; margin-bottom:4pt;"><strong style="color:#1B4F72; font-size:11.5pt;">${num}</strong>${rest}</div>`;
+      });
+
+      // Deloppgaver med bokstaver (a), b), c) osv. inne i oppgaver)
+      html = html.replace(/^([a-z]\))(.+)$/gm, '<div class="deloppgave">$1$2</div>');
+
+      // Bullet-lister
+      html = html.replace(/^- (.+)$/gm, '<div style="margin-left:12pt; margin-bottom:2pt;">&bull; $1</div>');
+
+      // Nummererte lister (som ikke er oppgavenumre)
+      html = html.replace(/^(\d+)\. (.+)$/gm, '<div style="margin-left:12pt; margin-bottom:2pt;">$1. $2</div>');
+
+      // Muntlig øvelse
+      html = html.replace(/🗣/g, '<span style="font-size:14pt;">&#x1F5E3;</span>');
+
+      // Linjeskift
+      html = html.replace(/\n{3,}/g, '<br style="margin-bottom:16pt;">');
+      html = html.replace(/\n{2}/g, '<br style="margin-bottom:10pt;">');
+      html = html.replace(/\n/g, '<br>');
+
+      return html;
     }
 
     // === POWERPOINT ===
