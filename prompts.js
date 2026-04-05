@@ -51,7 +51,136 @@ Eks: "Skriv 6-8 setninger. Bruk minst 3 leddsetninger. Bruk perfektum."
 - Fasit alltid til slutt, med forklaring ved typiske feil`;
 
 
+// Liste over generelle temaer (matcher yrker.js)
+const GENERELLE_TEMAER = [
+  "Vanlige yrker i Norge",
+  "Rettigheter og plikter på jobb",
+  "Skatt og skattekort",
+  "NAV – hjelp til jobb",
+  "HMS – helse, miljø og sikkerhet",
+  "CV og jobbsøknad",
+  "Jobbintervjuet",
+  "Arbeidsavtale og kontrakt",
+  "Kommunikasjon og arbeidskultur",
+  "Fagforeninger og tillitsvalgte"
+];
+
+// Beskrivelser for hva de tre fagtekstene skal handle om per generelt tema
+const TEMA_TEKSTER = {
+  "Vanlige yrker i Norge": {
+    t1: { tittel: "Hvilke yrker trenger Norge?", beskrivelse: "Etterspørsel etter arbeidskraft i helse, oppvekst, bygg, transport og renhold. Hvilke bransjer som vokser." },
+    t2: { tittel: "Utdanning og krav", beskrivelse: "Hva som kreves for ulike yrker – fagbrev, kurs, sertifikater. Hvordan realkompetansevurdering fungerer." },
+    t3: { tittel: "Finne riktig yrke for deg", beskrivelse: "Hvordan velge yrke basert på interesser og erfaring. Karriereveiledning og NAVs rolle." }
+  },
+  "Rettigheter og plikter på jobb": {
+    t1: { tittel: "Dine rettigheter som arbeidstaker", beskrivelse: "Rett til ferie, pauser, trygt arbeidsmiljø, skriftlig arbeidsavtale og oppsigelsestid." },
+    t2: { tittel: "Dine plikter som arbeidstaker", beskrivelse: "Plikt til å møte presist, utføre arbeid, gi beskjed ved sykdom og følge regler." },
+    t3: { tittel: "Hva gjør du hvis noe er galt?", beskrivelse: "Hvem du snakker med ved problemer – leder, tillitsvalgt, verneombud, Arbeidstilsynet." }
+  },
+  "Skatt og skattekort": {
+    t1: { tittel: "Hvordan fungerer skatt i Norge?", beskrivelse: "Hva skatt er, hvorfor vi betaler skatt, og hva skattepengene brukes til." },
+    t2: { tittel: "Skattekort og lønnslipp", beskrivelse: "Hva et skattekort er, hvordan bestille det, lese en lønnslipp, brutto vs. netto." },
+    t3: { tittel: "Skattemeldingen", beskrivelse: "Hva skattemeldingen er, når den kommer, og hvordan sjekke at alt stemmer." }
+  },
+  "NAV – hjelp til jobb": {
+    t1: { tittel: "Hva er NAV?", beskrivelse: "NAVs rolle som veileder. Registrere seg som arbeidssøker. Samarbeid mellom NAV og bruker." },
+    t2: { tittel: "Økonomisk støtte fra NAV", beskrivelse: "Dagpenger, tiltakspenger, arbeidsavklaringspenger. Vilkår og plikter." },
+    t3: { tittel: "NAV og veien til jobb", beskrivelse: "Aktivitetsplan, kurs, praksisplass og lønnstilskudd. Digitale tjenester på nav.no." }
+  },
+  "HMS – helse, miljø og sikkerhet": {
+    t1: { tittel: "Hva er HMS?", beskrivelse: "HMS-begrepet. Forebygge skader og ulykker. Verneutstyr og sikkerhetsrutiner." },
+    t2: { tittel: "Fysisk og psykisk arbeidsmiljø", beskrivelse: "Ergonomi, støy, kjemikalier. Mobbing, stress og psykososialt arbeidsmiljø." },
+    t3: { tittel: "Dine plikter og rettigheter innen HMS", beskrivelse: "Melde fra om farlige situasjoner. Verneombud. Arbeidstilsynet." }
+  },
+  "CV og jobbsøknad": {
+    t1: { tittel: "Hvordan skrive en god CV", beskrivelse: "Oppbygging av CV. Personalia, utdanning, erfaring, kompetanse og referanser." },
+    t2: { tittel: "Søknaden som åpner dører", beskrivelse: "Hva en søknad skal inneholde. Tilpasse søknaden til stillingen. Motivasjon." },
+    t3: { tittel: "Finne ledige stillinger", beskrivelse: "Søke jobb på Finn.no, NAV.no og bedriftssider. Sette opp søkevarsler. Nettverk." }
+  },
+  "Jobbintervjuet": {
+    t1: { tittel: "Forberede seg til intervju", beskrivelse: "Undersøke bedriften. Forberede svar på vanlige spørsmål. Hva du skal ta med." },
+    t2: { tittel: "Under intervjuet", beskrivelse: "Kroppsspråk, punktlighet, førsteinntrykk. Fortelle om styrker og erfaringer." },
+    t3: { tittel: "Etter intervjuet", beskrivelse: "Takke for møtet. Oppfølging. Hva gjør du hvis du får avslag?" }
+  },
+  "Arbeidsavtale og kontrakt": {
+    t1: { tittel: "Hva er en arbeidsavtale?", beskrivelse: "Krav om skriftlig avtale. Hva avtalen skal inneholde: lønn, arbeidstid, oppgaver." },
+    t2: { tittel: "Viktige punkter i kontrakten", beskrivelse: "Fast vs. midlertidig stilling. Prøvetid. Oppsigelse. Overtid og tillegg." },
+    t3: { tittel: "Forstå kontrakten din", beskrivelse: "Lese og forstå juridisk språk. Spørre om det du ikke forstår. Signering." }
+  },
+  "Kommunikasjon og arbeidskultur": {
+    t1: { tittel: "Norsk arbeidskultur", beskrivelse: "Flat struktur, selvstendig ansvar, punktlighet. Du og formelt/uformelt språk." },
+    t2: { tittel: "Kommunikasjon med kollegaer", beskrivelse: "Lunsjpausen, småprat, sosiale koder. Gi og ta imot beskjeder." },
+    t3: { tittel: "Når kulturer møtes", beskrivelse: "Kulturforskjeller i arbeidsliv. Tilpasse seg uten å miste identiteten." }
+  },
+  "Fagforeninger og tillitsvalgte": {
+    t1: { tittel: "Hva er en fagforening?", beskrivelse: "Fagforeningens rolle. LO, YS, Unio. Frivillig medlemskap." },
+    t2: { tittel: "Hva gjør en tillitsvalgt?", beskrivelse: "Tillitsvalgtes rolle. Hjelp ved konflikter. Lønnsforhandlinger." },
+    t3: { tittel: "Den norske arbeidsmodellen", beskrivelse: "Trepartssamarbeid: stat, arbeidsgiver, arbeidstaker. Tariffavtaler." }
+  }
+};
+
+function erGenereltTema(valg) {
+  return GENERELLE_TEMAER.includes(valg);
+}
+
 function lagFagtekstPrompt(yrke, nivaa) {
+  if (erGenereltTema(yrke)) {
+    return lagGenereltTemaPrompt(yrke, nivaa);
+  }
+  return lagYrkePrompt(yrke, nivaa);
+}
+
+function lagGenereltTemaPrompt(tema, nivaa) {
+  const t = TEMA_TEKSTER[tema];
+  if (!t) return lagYrkePrompt(tema, nivaa); // fallback
+
+  return `Lag undervisningsmateriell om temaet "${tema}" for ${nivaa}.
+Dette er et GENERELT arbeidsliv-tema som gjelder alle yrker i Norge.
+
+REKKEFØLGE (tekst → oppgaver → tekst → oppgaver):
+
+## VIKTIGE ORD OG UTTRYKK
+12-18 viktige ord og uttrykk knyttet til ${tema}. Format: **Ordet** = forklaring. Eksempelsetning.
+
+## FAGTEKST 1: ${t.t1.tittel}
+${t.t1.beskrivelse} ${tekstlengde(nivaa)}
+Integrer ${grammatikkfokus(nivaa)} naturlig i teksten.
+
+## OPPGAVER TIL FAGTEKST 1
+5 varierte oppgaver nummerert 1a, 1b, 1c, 1d, 1e.
+${oppgavesett(nivaa, 1, tema)}
+
+## FAGTEKST 2: ${t.t2.tittel}
+${t.t2.beskrivelse} ${tekstlengde(nivaa)}
+
+## OPPGAVER TIL FAGTEKST 2
+5 varierte oppgaver nummerert 2a, 2b, 2c, 2d, 2e.
+${oppgavesett(nivaa, 2, tema)}
+
+## FAGTEKST 3: ${t.t3.tittel}
+${t.t3.beskrivelse} ${tekstlengde(nivaa)}
+
+## OPPGAVER TIL FAGTEKST 3
+5 varierte oppgaver nummerert 3a, 3b, 3c, 3d, 3e.
+${oppgavesett(nivaa, 3, tema)}
+
+## 🗣 MUNTLIG ØVELSE
+Rollespill eller parmøvelse som kobler sammen temaene fra alle tre tekster. Oppgi roller, situasjon og samtalepunkter.${nivaa === 'B1' || nivaa === 'B2' ? '\nGi setningsstartere: "Jeg har alltid...", "Fordi jeg...", "Jeg tror at..."' : ''}
+
+## FASIT
+Fasit til alle oppgaver (1a–3e). Ved U i sant/usant: gi riktig svar. Ved åpne oppgaver: eksempelsvar.
+
+=== KRITISK FORMATERING ===
+- Nummerer ALLE oppgaver som 1a, 1b, 1c, 1d, 1e (fagtekst 1), 2a, 2b, 2c, 2d, 2e (fagtekst 2), 3a, 3b, 3c, 3d, 3e (fagtekst 3)
+- Hver oppgave (1a, 1b osv.) starter ALLTID med oppgavenummeret i fet skrift: **1a)**, **1b)** osv.
+- Gi ALLTID en kort instruksjon i kursiv etter nummeret
+- Hver deloppgave starter på NY LINJE
+- Mellom hovedoppgaver skal det være EN tom linje
+- Skrivefelt: bruk _______________ (minst 15 understreker)
+- For setningssvar: _____________________________________________`;
+}
+
+function lagYrkePrompt(yrke, nivaa) {
   return `Lag undervisningsmateriell om "${yrke}" for ${nivaa}.
 
 REKKEFØLGE (tekst → oppgaver → tekst → oppgaver):
@@ -187,12 +316,30 @@ e) Muntlig forberedelse: Skriv ned 5 ting du ville sagt om deg selv i et jobbint
 
 
 function lagPresentasjonPrompt(yrke, nivaa) {
+  const erGenerelt = erGenereltTema(yrke);
+  const t = erGenerelt ? TEMA_TEKSTER[yrke] : null;
+
+  const slideTitler = erGenerelt && t ? {
+    s5: t.t1.tittel,
+    s6: t.t1.beskrivelse.split('.')[0],
+    s7: t.t2.tittel,
+    s8: t.t2.beskrivelse.split('.')[0],
+    s9: t.t3.tittel
+  } : {
+    s5: 'Arbeidsoppgaver',
+    s6: 'En vanlig arbeidsdag',
+    s7: 'Arbeidsmiljø og kollegaer',
+    s8: 'HMS og sikkerhet',
+    s9: 'Veien til jobb'
+  };
+
   return `Lag 10 slides om "${yrke}" for ${nivaa}. Brukes FØR arbeidsarket for å aktivere forkunnskaper.
+${erGenerelt ? 'Dette er et GENERELT arbeidsliv-tema som gjelder alle yrker i Norge.' : ''}
 
 Bruk NØYAKTIG dette formatet:
 
 ---SLIDE 1---
-TITTEL: ${yrke} – Yrkesnorsk ${nivaa}
+TITTEL: ${yrke} – ${erGenerelt ? 'Arbeidsnorsk' : 'Yrkesnorsk'} ${nivaa}
 INNHOLD: Molde voksenopplæringssenter – MBO
 NOTATER: Velkommen. I dag: ${yrke}.
 
@@ -219,28 +366,28 @@ INNHOLD:
 NOTATER: Gjennomgå ordene.
 
 ---SLIDE 5---
-TITTEL: Arbeidsoppgaver
-INNHOLD: Typiske oppgaver (stikkord)
+TITTEL: ${slideTitler.s5}
+INNHOLD: Hovedpunkter (stikkord)
 NOTATER: Tips.
 
 ---SLIDE 6---
-TITTEL: En vanlig arbeidsdag
-INNHOLD: Klokkeslett + aktiviteter
+TITTEL: ${slideTitler.s6}
+INNHOLD: Utdyping med eksempler
 NOTATER: Tips.
 
 ---SLIDE 7---
-TITTEL: Arbeidsmiljø og kollegaer
-INNHOLD: Samarbeid, kommunikasjon
+TITTEL: ${slideTitler.s7}
+INNHOLD: Hovedpunkter
 NOTATER: Tips.
 
 ---SLIDE 8---
-TITTEL: HMS og sikkerhet
-INNHOLD: Sikkerhetsrutiner
+TITTEL: ${slideTitler.s8}
+INNHOLD: Utdyping med eksempler
 NOTATER: Tips.
 
 ---SLIDE 9---
-TITTEL: Veien til jobb
-INNHOLD: Utdanning, kurs, egenskaper
+TITTEL: ${slideTitler.s9}
+INNHOLD: Hovedpunkter
 NOTATER: Tips.
 
 ---SLIDE 10---

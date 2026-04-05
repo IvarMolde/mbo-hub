@@ -1,5 +1,17 @@
 // yrker.js
 const YRKER = {
+  "⭐ Generelt arbeidsliv": [
+    "Vanlige yrker i Norge",
+    "Rettigheter og plikter på jobb",
+    "Skatt og skattekort",
+    "NAV – hjelp til jobb",
+    "HMS – helse, miljø og sikkerhet",
+    "CV og jobbsøknad",
+    "Jobbintervjuet",
+    "Arbeidsavtale og kontrakt",
+    "Kommunikasjon og arbeidskultur",
+    "Fagforeninger og tillitsvalgte"
+  ],
   "Helse og omsorg": [
     "Helsefagarbeider",
     "Hjemmehjelp / hjemmetjeneste",
